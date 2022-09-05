@@ -1,22 +1,28 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import { useMachine } from "@xstate/react";
-import { promiseMachine } from "./contexts/PromiseMachine";
+import { formMachine } from "./contexts/FormMachine";
+import { MockForm } from "./components/organisms";
 
 const App = () => {
-  const [state, send] = useMachine(promiseMachine);
+  const [state, send] = useMachine(formMachine);
+  // const onSubmit = useCallback((data) => {
+  //   //skicka data från form till FormMachine
+  //   send("STORE_FORM_DATA", data);
+  // }, []);
+
+  const onSubmit = (data: string) => {
+    console.log("onSubmit called", data);
+  };
+
   return (
-    <div>
-      <div>
-        {state.matches("pending") && <p>Loading...</p>}
-        {state.matches("rejected") && <p>Promise Rejected</p>}
-        {state.matches("resolved") && <p>Promise Resolved</p>}
-      </div>
-      <div>
-        <button onClick={() => send("RESOLVE")}>Send Resolve</button>
-        <button onClick={() => send("REJECT")}>Send Reject</button>
-      </div>
+    <div className="App">
+      <h2>A test form</h2>
+      {state && (
+        <div>
+          <MockForm onSubmit={onSubmit} />
+        </div>
+      )}
     </div>
   );
 };
