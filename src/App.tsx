@@ -1,26 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import { useMachine } from "@xstate/react";
+import { promiseMachine } from "./contexts/PromiseMachine";
 
-function App() {
+const App = () => {
+  const [state, send] = useMachine(promiseMachine);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div>
+        {state.matches("pending") && <p>Loading...</p>}
+        {state.matches("rejected") && <p>Promise Rejected</p>}
+        {state.matches("resolved") && <p>Promise Resolved</p>}
+      </div>
+      <div>
+        <button onClick={() => send("RESOLVE")}>Send Resolve</button>
+        <button onClick={() => send("REJECT")}>Send Reject</button>
+      </div>
     </div>
   );
-}
+};
 
 export default App;
