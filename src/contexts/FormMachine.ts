@@ -1,18 +1,25 @@
-import { createMachine } from "xstate";
+import { createMachine, assign } from "xstate";
 
-export const formMachine = createMachine<
-  {
-    name: [];
+export const formMachine = createMachine({
+  id: "formMachine",
+  context: {
+    name: "No Name"
   },
-  { type: "SUBMIT" } | { type: "SUCCESS" } | { type: "ERROR" }
->({
-  id: "form",
-  initial: "INITIAL",
-  context: { name: [] },
-  states: {
-    INITIAL: {},
-    SUBMIT: {},
-    SUCCESS: {},
-    ERROR: {},
-  },
+  on: {
+    SUBMIT: {
+      actions: assign({
+        name: "submit"
+      })
+    },
+    ERROR: {
+      actions: assign({
+        name: () => "Oh no... something went wrong ¯_(ツ)_/¯</"
+      })
+    },
+    RESET: {
+      actions: assign({
+        name: ""
+      })
+    }
+  }
 });

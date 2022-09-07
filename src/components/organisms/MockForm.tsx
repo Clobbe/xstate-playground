@@ -1,20 +1,30 @@
-import React, { FC } from "react";
+import { useMachine } from "@xstate/react";
+import React, { FC, useCallback } from "react";
 import { useForm } from "react-hook-form";
+import { formMachine } from "../../contexts/FormMachine";
 
-type Inputs = {
+export interface TInputs {
   name: string;
-};
-
-interface Props {
-  onSubmit: (data: any) => void;
 }
 
-export const MockForm: FC<Props> = ({ onSubmit }) => {
+// interface Props {
+//   onSubmit: (data: any) => void;
+// }
+
+export const MockForm: FC = () => {
+  const [_, send] = useMachine(formMachine);
+
+  const onSubmit = useCallback((formData: any) => {
+    // if (!formData.name) send("ERROR");
+    console.log("onSubmit called", formData);
+    send("SUBMIT", formData.name);
+  }, []);
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<Inputs>();
+    formState: { errors }
+  } = useForm<TInputs>();
 
   return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
